@@ -1,0 +1,165 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"><title>Noor – Islamic Knowledge Hub</title>
+<style>
+:root{--bg:#f7f5ef;--card:#fff;--tx:#1d2a24;--mu:#5d6b64;--ac:#0f6b4f;--ac2:#e6f1ec;--bd:#dcd8cb;color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#121a16;--card:#1b2620;--tx:#e8efe9;--mu:#9fb0a6;--ac:#4cc79a;--ac2:#22332b;--bd:#2e4036;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#121a16;--card:#1b2620;--tx:#e8efe9;--mu:#9fb0a6;--ac:#4cc79a;--ac2:#22332b;--bd:#2e4036;color-scheme:dark}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--tx);font:16px/1.55 system-ui,-apple-system,"Segoe UI",sans-serif}
+header{padding:18px 16px 8px;max-width:820px;margin:auto}h1{margin:0;font-size:1.5rem;color:var(--ac)}header p{margin:2px 0 0;color:var(--mu);font-size:.9rem}
+nav{display:flex;gap:6px;overflow-x:auto;padding:8px 16px;max-width:820px;margin:auto;position:sticky;top:env(safe-area-inset-top,0px);background:var(--bg);z-index:5}
+nav button{flex:none;border:1px solid var(--bd);background:var(--card);color:var(--tx);padding:7px 13px;border-radius:99px;font:inherit;font-size:.9rem;cursor:pointer}
+nav button.on{background:var(--ac);color:#fff;border-color:var(--ac)}
+main{max-width:820px;margin:auto;padding:8px 16px 40px}section{display:none}section.on{display:block}
+.card{background:var(--card);border:1px solid var(--bd);border-radius:12px;padding:14px;margin:10px 0}
+h2{font-size:1.15rem;margin:14px 0 6px}h3{font-size:1rem;margin:0 0 4px;color:var(--ac)}
+.ar{font:1.6rem/2.2 "Amiri","Scheherazade New","Noto Naskh Arabic",serif;direction:rtl;text-align:right;margin:4px 0}
+.mu{color:var(--mu);font-size:.88rem}.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(96px,1fr));gap:8px}
+.grid div{background:var(--ac2);border-radius:10px;text-align:center;padding:8px 4px}.grid b{display:block;font:1.8rem/1.4 serif}
+table{width:100%;border-collapse:collapse}td,th{padding:7px 4px;border-bottom:1px solid var(--bd);text-align:left}
+.big{font-size:1.9rem;font-weight:700;color:var(--ac)}.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+input{font:inherit;padding:7px;border:1px solid var(--bd);border-radius:8px;background:var(--bg);color:var(--tx);min-width:0}
+.btn{background:var(--ac);color:#fff;border:0;border-radius:8px;padding:8px 14px;font:inherit;cursor:pointer}
+.alert{background:#fff3cd;color:#5a4500;border-radius:10px;padding:9px 12px;margin:8px 0;font-size:.92rem}
+.nxt td:first-child{font-weight:700}.nxt tr.hl{background:var(--ac2)}
+#arrow{width:140px;height:140px;border:3px solid var(--ac);border-radius:50%;position:relative;margin:10px auto;transition:transform .2s}
+#arrow:after{content:"";position:absolute;left:50%;top:6px;margin-left:-9px;border:9px solid transparent;border-bottom:50px solid var(--ac);border-top:0}
+#chat{height:340px;overflow-y:auto;border:1px solid var(--bd);border-radius:12px;padding:10px;background:var(--card)}
+.m{margin:6px 0;padding:8px 11px;border-radius:12px;max-width:88%;white-space:pre-wrap}.u{background:var(--ac);color:#fff;margin-left:auto}.b{background:var(--ac2)}
+details{margin:6px 0}summary{cursor:pointer;font-weight:600}
+</style></head><body>
+<header><h1>🌙 Noor</h1><p>Learn, pray, and reflect – an Islamic knowledge hub</p></header>
+<nav id="nav"></nav><main>
+<section id="home"><div id="alerts"></div>
+<div class="card"><div class="mu" id="hdate"></div><div class="big" id="hijri"></div><div class="mu" id="greg"></div></div>
+<div class="card"><h3>Prayer times</h3><div class="row"><input id="lat" size="8" placeholder="Lat"><input id="lng" size="8" placeholder="Lng"><button class="btn" id="geo">Use my location</button></div>
+<p class="mu" id="loc"></p><table class="nxt" id="pt"></table><p class="mu" id="next"></p>
+<button class="btn" id="notif">Enable prayer alerts</button><p class="mu">Method: Muslim World League (Fajr 18°, Isha 17°), standard Asr. Times are calculated, so confirm with your local mosque; alerts work while this page is open.</p></div></section>
+
+<section id="qibla"><div class="card"><h3>Qibla direction</h3><p>Bearing from your location (set it on the Home tab) to the Kaaba, measured clockwise from true north:</p><div class="big" id="qdeg">–</div>
+<div id="arrow"></div><p class="mu" id="qnote">Arrow shows the Qibla relative to the top of your screen. Tap below to use your phone’s compass.</p><button class="btn" id="comp">Use compass</button></div></section>
+
+<section id="quran"><div class="card mu">A selection of frequently recited surahs with meanings. For the full Mushaf, use a trusted print edition or a verified app such as Quran.com.</div><div id="qlist"></div></section>
+<section id="hadith"><div class="card mu">Well-known narrations with their sources (meanings paraphrased).</div><div id="hlist"></div></section>
+<section id="azkar"><div class="card"><h3>Tasbih counter</h3><div class="row"><div class="big" id="cnt">0</div><button class="btn" id="tap">Tap</button><button class="btn" id="rst" style="background:var(--mu)">Reset</button></div></div><div id="zlist"></div></section>
+<section id="arabic"><div class="card"><h3>The Arabic alphabet (28 letters)</h3><p class="mu">Arabic is read right to left. Letters change shape by position; these are the isolated forms.</p><div class="grid" id="letters"></div></div>
+<div class="card"><h3>Essential phrases</h3><div id="phr"></div></div>
+<div class="card"><h3>Short vowels</h3><p class="ar">بَ بِ بُ</p><p class="mu">Fatha = “a”, Kasra = “i”, Damma = “u”. Sukun (ْ) = no vowel; Shadda (ّ) = doubled letter.</p></div></section>
+<section id="fiqh"><div class="card mu">General, mainstream guidance. Schools of thought (madhhabs) differ on details; consult a qualified scholar for personal rulings.</div><div id="flist"></div></section>
+<section id="cal"><div id="clist"></div></section>
+<section id="ask"><div class="card"><h3>Ask the Islamic assistant</h3><p class="mu">Answers are educational, not fatwas. Verify important matters with a scholar.</p></div>
+<div id="chat"></div><div class="row" style="margin-top:8px"><input id="q" style="flex:1" placeholder="e.g. How do I perform wudu?"><button class="btn" id="send">Ask</button></div></section>
+</main>
+<script>
+const $=id=>document.getElementById(id);
+const tabs=[["home","Home"],["qibla","Qibla"],["quran","Quran"],["hadith","Hadith"],["azkar","Azkar & Dua"],["arabic","Learn Arabic"],["fiqh","Fiqh"],["cal","Calendar"],["ask","Ask"]];
+tabs.forEach(([id,n],i)=>{const b=document.createElement("button");b.textContent=n;b.dataset.t=id;b.onclick=()=>show(id);$("nav").appendChild(b)});
+function show(id){document.querySelectorAll("section").forEach(s=>s.classList.toggle("on",s.id==id));document.querySelectorAll("nav button").forEach(b=>b.classList.toggle("on",b.dataset.t==id));scrollTo(0,0)}
+show("home");
+/* ---------- data ---------- */
+const SURAHS=[
+["1. Al-Fatiha (The Opening)","بِسْمِ ٱللَّهِ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ ۝ ٱلْحَمْدُ لِلَّهِ رَبِّ ٱلْعَٰلَمِينَ ۝ ٱلرَّحْمَٰنِ ٱلرَّحِيمِ ۝ مَٰلِكِ يَوْمِ ٱلدِّينِ ۝ إِيَّاكَ نَعْبُدُ وَإِيَّاكَ نَسْتَعِينُ ۝ ٱهْدِنَا ٱلصِّرَٰطَ ٱلْمُسْتَقِيمَ ۝ صِرَٰطَ ٱلَّذِينَ أَنْعَمْتَ عَلَيْهِمْ غَيْرِ ٱلْمَغْضُوبِ عَلَيْهِمْ وَلَا ٱلضَّآلِّينَ","In the name of God, the Most Gracious, the Most Merciful. Praise be to God, Lord of all worlds, the Most Gracious, the Most Merciful, Master of the Day of Judgment. You alone we worship and You alone we ask for help. Guide us to the straight path, the path of those You have blessed, not of those who earned anger, nor of those who went astray."],
+["103. Al-Asr (Time)","وَٱلْعَصْرِ ۝ إِنَّ ٱلْإِنسَٰنَ لَفِى خُسْرٍ ۝ إِلَّا ٱلَّذِينَ ءَامَنُوا۟ وَعَمِلُوا۟ ٱلصَّٰلِحَٰتِ وَتَوَاصَوْا۟ بِٱلْحَقِّ وَتَوَاصَوْا۟ بِٱلصَّبْرِ","By time, humanity is in loss, except those who believe, do good deeds, and urge one another to truth and to patience."],
+["108. Al-Kawthar","إِنَّآ أَعْطَيْنَٰكَ ٱلْكَوْثَرَ ۝ فَصَلِّ لِرَبِّكَ وَٱنْحَرْ ۝ إِنَّ شَانِئَكَ هُوَ ٱلْأَبْتَرُ","We have granted you abundance. So pray to your Lord and sacrifice. Indeed, it is your enemy who is cut off."],
+["112. Al-Ikhlas (Sincerity)","قُلْ هُوَ ٱللَّهُ أَحَدٌ ۝ ٱللَّهُ ٱلصَّمَدُ ۝ لَمْ يَلِدْ وَلَمْ يُولَدْ ۝ وَلَمْ يَكُن لَّهُۥ كُفُوًا أَحَدٌۢ","Say: He is God, the One. God, the Eternal Refuge. He neither begets nor was begotten, and none is comparable to Him."],
+["113. Al-Falaq (The Daybreak)","قُلْ أَعُوذُ بِرَبِّ ٱلْفَلَقِ ۝ مِن شَرِّ مَا خَلَقَ ۝ وَمِن شَرِّ غَاسِقٍ إِذَا وَقَبَ ۝ وَمِن شَرِّ ٱلنَّفَّٰثَٰتِ فِى ٱلْعُقَدِ ۝ وَمِن شَرِّ حَاسِدٍ إِذَا حَسَدَ","Say: I seek refuge in the Lord of daybreak, from the evil of what He created, from the evil of darkness when it settles, from the evil of those who blow on knots, and from the evil of the envier when he envies."],
+["114. An-Nas (Mankind)","قُلْ أَعُوذُ بِرَبِّ ٱلنَّاسِ ۝ مَلِكِ ٱلنَّاسِ ۝ إِلَٰهِ ٱلنَّاسِ ۝ مِن شَرِّ ٱلْوَسْوَاسِ ٱلْخَنَّاسِ ۝ ٱلَّذِى يُوَسْوِسُ فِى صُدُورِ ٱلنَّاسِ ۝ مِنَ ٱلْجِنَّةِ وَٱلنَّاسِ","Say: I seek refuge in the Lord of mankind, the King of mankind, the God of mankind, from the evil of the whispering withdrawer, who whispers in the hearts of mankind, from among jinn and mankind."]];
+const HAD=[
+["Actions are judged by intentions","Actions are only by intentions, and each person gets what they intended.","Bukhari 1, Muslim 1907 (Nawawi 1)"],
+["Religion is sincere advice","The religion is sincere advice – to God, His Book, His Messenger, the leaders of the Muslims, and their common people.","Muslim 55 (Nawawi 7)"],
+["Love for your brother","None of you truly believes until he loves for his brother what he loves for himself.","Bukhari 13, Muslim 45 (Nawawi 13)"],
+["Speak good or be silent","Whoever believes in God and the Last Day should speak good or keep silent.","Bukhari 6018, Muslim 47 (Nawawi 15)"],
+["Do not be angry","A man asked for advice; the Prophet ﷺ said repeatedly: “Do not become angry.”","Bukhari 6116 (Nawawi 16)"],
+["The best of you","The best of you are those who learn the Quran and teach it.","Bukhari 5027"],
+["Ease the way to Paradise","Whoever treads a path seeking knowledge, God makes easy for him a path to Paradise.","Muslim 2699"],
+["Smiling is charity","Your smile in the face of your brother is charity.","Tirmidhi 1956 (graded authentic)"]];
+const AZ=[
+["Morning & evening: Tasbih","سُبْحَانَ ٱللَّهِ وَبِحَمْدِهِ","Subhan Allahi wa bihamdih – Glory and praise be to God. (100 times; Muslim 2692)"],
+["After every prayer","سُبْحَانَ ٱللَّهِ ‏/‏ ٱلْحَمْدُ لِلَّهِ ‏/‏ ٱللَّهُ أَكْبَرُ","Subhan Allah ×33, Alhamdulillah ×33, Allahu Akbar ×33–34 (Muslim 595). Use the counter above."],
+["Seeking forgiveness","أَسْتَغْفِرُ ٱللَّهَ","Astaghfirullah – I seek God’s forgiveness. (Prophet ﷺ said it over 70–100 times daily.)"],
+["Before eating","بِسْمِ ٱللَّهِ","Bismillah – In the name of God."],
+["After eating","ٱلْحَمْدُ لِلَّهِ ٱلَّذِي أَطْعَمَنِي هَٰذَا وَرَزَقَنِيهِ مِنْ غَيْرِ حَوْلٍ مِنِّي وَلَا قُوَّةٍ","Praise be to God who fed me this and provided it without any power or might from me. (Abu Dawud, Tirmidhi)"],
+["Before sleep","بِاسْمِكَ ٱللَّهُمَّ أَمُوتُ وَأَحْيَا","Bismika Allahumma amutu wa ahya – In Your name, O God, I die and I live. (Bukhari 6324)"],
+["Upon waking","ٱلْحَمْدُ لِلَّهِ ٱلَّذِي أَحْيَانَا بَعْدَ مَا أَمَاتَنَا وَإِلَيْهِ ٱلنُّشُورُ","Praise be to God who gave us life after causing us to die, and to Him is the resurrection. (Bukhari 6312)"],
+["Leaving home","بِسْمِ ٱللَّهِ تَوَكَّلْتُ عَلَى ٱللَّهِ وَلَا حَوْلَ وَلَا قُوَّةَ إِلَّا بِٱللَّهِ","In the name of God, I rely on God; there is no power or might except with God. (Abu Dawud 5095)"],
+["Entering the mosque","ٱللَّهُمَّ ٱفْتَحْ لِي أَبْوَابَ رَحْمَتِكَ","O God, open for me the doors of Your mercy. (Muslim 713)"],
+["Anxiety & distress","لَا إِلَٰهَ إِلَّا أَنْتَ سُبْحَانَكَ إِنِّي كُنْتُ مِنَ ٱلظَّالِمِينَ","There is no god but You, glory be to You, I was among the wrongdoers. (Quran 21:87)"],
+["Comprehensive dua","رَبَّنَا آتِنَا فِي ٱلدُّنْيَا حَسَنَةً وَفِي ٱلْآخِرَةِ حَسَنَةً وَقِنَا عَذَابَ ٱلنَّارِ","Our Lord, give us good in this world and the next, and protect us from the Fire. (Quran 2:201)"]];
+const LET="ا Alif|ب Ba|ت Ta|ث Tha|ج Jim|ح Ha|خ Kha|د Dal|ذ Dhal|ر Ra|ز Zay|س Sin|ش Shin|ص Sad|ض Dad|ط Ta (heavy)|ظ Zha|ع ʿAyn|غ Ghayn|ف Fa|ق Qaf|ك Kaf|ل Lam|م Mim|ن Nun|ه Ha|و Waw|ي Ya".split("|");
+const PH=[["السَّلَامُ عَلَيْكُمْ","Assalamu alaykum","Peace be upon you"],["وَعَلَيْكُمُ ٱلسَّلَامُ","Wa alaykumus salam","And upon you peace"],["ٱلْحَمْدُ لِلَّهِ","Alhamdulillah","Praise be to God"],["إِن شَاءَ ٱللَّهُ","In sha Allah","If God wills"],["مَا شَاءَ ٱللَّهُ","Masha Allah","What God has willed"],["جَزَاكَ ٱللَّهُ خَيْرًا","Jazakallahu khayran","May God reward you with good"],["شُكْرًا","Shukran","Thank you"],["كِتَابٌ · مَاءٌ · بَيْتٌ","Kitab · Ma’ · Bayt","Book · Water · House"]];
+const FQ=[
+["The five pillars","1) Shahada (testimony of faith). 2) Salah (five daily prayers). 3) Zakat (obligatory charity, 2.5% of savings above the nisab held for a lunar year). 4) Sawm (fasting Ramadan). 5) Hajj (pilgrimage once, if able)."],
+["The five daily prayers","Fajr 2 rakʿat · Dhuhr 4 · Asr 4 · Maghrib 3 · Isha 4 (obligatory units). Sunnah prayers accompany several of them, e.g. 2 before Fajr."],
+["How to perform wudu","Intend and say Bismillah. Wash hands ×3, rinse mouth ×3, sniff water into the nose and blow out ×3, wash face ×3, wash arms to the elbows ×3 (right first), wipe the head once (including ears), wash feet to the ankles ×3."],
+["What breaks wudu","Anything exiting the private parts, passing wind, deep sleep, loss of consciousness. Scholars differ on details such as touching private parts or eating camel meat."],
+["Steps of salah","Intention, Takbir, recite Al-Fatiha and another passage, ruku (bowing), rising, two sujud (prostrations) with a sitting between, then tashahhud after every two rakʿat and the final one, ending with salam to right and left."],
+["Fasting (sawm)","From true dawn (Fajr) to sunset: no food, drink or marital relations. Exempt: the sick, travelers and others with valid excuses must make up missed days (or give fidya where unable)."],
+["Zakat basics","2.5% on wealth above the nisab (value of about 85 g of gold) held for one lunar year. Recipients include the poor, the needy, and others listed in Quran 9:60."],
+["Halal & haram food","Pork, blood, carrion, alcohol and animals not slaughtered in God’s name are prohibited. Meat of permitted animals slaughtered with God’s name is halal."],
+["Friday (Jumuʿah)","Obligatory congregational prayer for men at Dhuhr time, replacing Dhuhr, preceded by two sermons. Ghusl, perfume and early arrival are recommended."]];
+const EV=[[1,1,"Islamic New Year"],[1,10,"Day of Ashura – fasting recommended"],[3,12,"Mawlid (observed by many; scholars differ)"],[7,27,"Isra and Miʿraj (traditional date)"],[9,1,"First day of Ramadan"],[9,21,"Last ten nights of Ramadan begin – seek Laylat al-Qadr"],[10,1,"Eid al-Fitr"],[12,9,"Day of Arafah – fasting recommended"],[12,10,"Eid al-Adha"]];
+const HM=["Muharram","Safar","Rabiʿ al-awwal","Rabiʿ al-thani","Jumada al-ula","Jumada al-thani","Rajab","Shaʿban","Ramadan","Shawwal","Dhul Qadah","Dhul Hijjah"];
+/* ---------- render lists ---------- */
+$("qlist").innerHTML=SURAHS.map(s=>`<div class="card"><h3>${s[0]}</h3><div class="ar">${s[1]}</div><p>${s[2]}</p></div>`).join("");
+$("hlist").innerHTML=HAD.map(h=>`<div class="card"><h3>${h[0]}</h3><p>${h[1]}</p><p class="mu">${h[2]}</p></div>`).join("");
+$("zlist").innerHTML=AZ.map(a=>`<div class="card"><h3>${a[0]}</h3><div class="ar">${a[1]}</div><p class="mu">${a[2]}</p></div>`).join("");
+$("letters").innerHTML=LET.map(l=>{const [c,...n]=l.split(" ");return`<div><b>${c}</b>${n.join(" ")}</div>`}).join("");
+$("phr").innerHTML=PH.map(p=>`<div style="margin:8px 0"><div class="ar">${p[0]}</div><b>${p[1]}</b> – ${p[2]}</div>`).join("");
+$("flist").innerHTML=FQ.map(f=>`<details class="card"><summary>${f[0]}</summary><p>${f[1]}</p></details>`).join("");
+let n=0;$("tap").onclick=()=>{$("cnt").textContent=++n;navigator.vibrate&&navigator.vibrate(15)};$("rst").onclick=()=>{n=0;$("cnt").textContent=0};
+/* ---------- calendar ---------- */
+const hf=new Intl.DateTimeFormat("en-u-ca-islamic-umalqura-nu-latn",{day:"numeric",month:"numeric",year:"numeric"});
+function hij(d){const p=hf.formatToParts(d),g=t=>+p.find(x=>x.type==t).value;return{d:g("day"),m:g("month"),y:g("year")}}
+const now=new Date(),H=hij(now);
+$("hdate").textContent="Today";$("hijri").textContent=`${H.d} ${HM[H.m-1]} ${H.y} AH`;$("greg").textContent=now.toDateString();
+const up=[];for(let i=0;i<400;i++){const d=new Date(now.getTime()+i*864e5),h=hij(d);EV.forEach((e,k)=>{if(h.m==e[0]&&h.d==e[1]&&!up.find(u=>u.k==k))up.push({k,i,d,e})})}
+up.sort((a,b)=>a.i-b.i);
+$("clist").innerHTML=`<div class="card"><h3>Today: ${H.d} ${HM[H.m-1]} ${H.y} AH</h3><p class="mu">Based on the Umm al-Qura calendar; local moon sighting may differ by a day.</p></div><div class="card"><h3>Upcoming Islamic events</h3><table>`+up.map(u=>`<tr><td>${u.e[2]}</td><td class="mu">${u.d.toDateString()}</td><td>${u.i==0?"Today":"in "+u.i+" d"}</td></tr>`).join("")+`</table></div><div class="card"><h3>Recurring sunnah fasts</h3><p>Mondays and Thursdays, and the “white days” (13th–15th of each lunar month).</p></div>`;
+const soon=up.filter(u=>u.i<=7);
+$("alerts").innerHTML=soon.map(u=>`<div class="alert">🔔 ${u.e[2]} – ${u.i==0?"today":"in "+u.i+" day"+(u.i>1?"s":"")}</div>`).join("");
+/* ---------- prayer times ---------- */
+const R=Math.PI/180,sin=x=>Math.sin(x*R),cos=x=>Math.cos(x*R),tan=x=>Math.tan(x*R);
+const fix=(a,m)=>((a%m)+m)%m;
+function times(date,lat,lng){
+ const tz=-date.getTimezoneOffset()/60,jd=Date.UTC(date.getFullYear(),date.getMonth(),date.getDate(),12)/864e5+2440587.5,D=jd-2451545;
+ const g=fix(357.529+.98560028*D,360),q=fix(280.459+.98564736*D,360),L=fix(q+1.915*sin(g)+.02*sin(2*g),360),e=23.439-4e-7*D;
+ const RA=fix(Math.atan2(cos(e)*sin(L),cos(L))/R,360)/15,dec=Math.asin(sin(e)*sin(L))/R,eq=q/15-RA;
+ const noon=12+tz-lng/15-(eq>12?eq-24:eq<-12?eq+24:eq);
+ const T=a=>Math.acos((-sin(a)-sin(lat)*sin(dec))/(cos(lat)*cos(dec)))/R/15;
+ const asr=Math.acos((sin(Math.atan(1/(1+tan(Math.abs(lat-dec))))/R*1)-sin(lat)*sin(dec))/(cos(lat)*cos(dec)))/R/15;
+ return{Fajr:noon-T(18),Sunrise:noon-T(.833),Dhuhr:noon+.0167,Asr:noon+asr,Maghrib:noon+T(.833),Isha:noon+T(17)}}
+const fmt=h=>{h=fix(h,24);let m=Math.round(h*60);return String(Math.floor(m/60)%24).padStart(2,"0")+":"+String(m%60).padStart(2,"0")};
+let pos={lat:9.9167,lng:8.8833},tm={};
+try{const s=JSON.parse(localStorage.getItem("pos"));if(s&&s.lat)pos=s}catch(e){}
+function drawPT(){
+ $("lat").value=pos.lat;$("lng").value=pos.lng;
+ tm=times(new Date(),pos.lat,pos.lng);
+ $("loc").textContent=`Location: ${(+pos.lat).toFixed(3)}, ${(+pos.lng).toFixed(3)}`;
+ const nowH=now.getHours()+now.getMinutes()/60;let nx=null;
+ for(const k in tm)if(k!="Sunrise"&&tm[k]>nowH){nx=k;break}
+ $("pt").innerHTML=Object.keys(tm).map(k=>`<tr class="${k==nx?"hl":""}"><td>${k}</td><td>${fmt(tm[k])}</td></tr>`).join("");
+ $("next").textContent=nx?`Next: ${nx} at ${fmt(tm[nx])}`:"Next: Fajr tomorrow";
+ const b=bearing();$("qdeg").textContent=b.toFixed(1)+"° from North";qb=b;$("arrow").style.transform=`rotate(${b}deg)`}
+function bearing(){const p1=pos.lat*R,p2=21.4225*R,dl=(39.8262-pos.lng)*R;return fix(Math.atan2(Math.sin(dl),Math.cos(p1)*Math.tan(p2)-Math.sin(p1)*Math.cos(dl))/R,360)}
+let qb=0;
+function setPos(la,ln){if(isNaN(la)||isNaN(ln)||Math.abs(la)>66)return;pos={lat:la,lng:ln};try{localStorage.setItem("pos",JSON.stringify(pos))}catch(e){}drawPT()}
+$("lat").onchange=$("lng").onchange=()=>setPos(parseFloat($("lat").value),parseFloat($("lng").value));
+$("geo").onclick=()=>navigator.geolocation?navigator.geolocation.getCurrentPosition(p=>setPos(p.coords.latitude,p.coords.longitude),()=>alert("Location unavailable – enter coordinates manually.")):alert("Geolocation not supported.");
+drawPT();
+$("comp").onclick=async()=>{try{if(DeviceOrientationEvent.requestPermission)await DeviceOrientationEvent.requestPermission();
+ addEventListener("deviceorientationabsolute",h,true);addEventListener("deviceorientation",h,true)}catch(e){$("qnote").textContent="Compass unavailable on this device."}};
+function h(e){const hd=e.webkitCompassHeading!=null?e.webkitCompassHeading:(e.absolute&&e.alpha!=null?360-e.alpha:null);if(hd!=null)$("arrow").style.transform=`rotate(${qb-hd}deg)`}
+let fired={};
+$("notif").onclick=async()=>{try{const r=await Notification.requestPermission();$("notif").textContent=r=="granted"?"Alerts on ✓":"Alerts blocked"}catch(e){$("notif").textContent="Alerts unsupported here"}};
+setInterval(()=>{const d=new Date(),c=d.getHours()+d.getMinutes()/60;for(const k in tm){if(k=="Sunrise")continue;const key=k+d.toDateString();if(!fired[key]&&c>=tm[k]&&c<tm[k]+.02){fired[key]=1;try{if(Notification.permission=="granted")new Notification(`${k} time`,{body:"It is time for "+k+" prayer."})}catch(e){}$("alerts").insertAdjacentHTML("afterbegin",`<div class="alert">🕌 It is time for ${k} prayer (${fmt(tm[k])})</div>`)}}},20000);
+/* ---------- chatbot ---------- */
+const hist=[];
+function bub(t,c){const d=document.createElement("div");d.className="m "+c;d.textContent=t;$("chat").appendChild(d);$("chat").scrollTop=1e9;return d}
+bub("Assalamu alaykum! Ask me about Islamic beliefs, worship, history, Arabic or daily practice.","b");
+async function ask(){const q=$("q").value.trim();if(!q)return;$("q").value="";bub(q,"u");hist.push("User: "+q);
+ const out=bub("…","b");
+ try{const s=await claude.use("sample");if(!s){out.textContent="The assistant is not available in this view. Open the page signed in to claude.ai.";return}
+ const p="You are a knowledgeable, gentle Islamic studies assistant. Answer concisely and accurately, drawing on the Quran, authentic hadith and mainstream scholarship. Mention where the major schools differ, cite sources when you are confident, say plainly when you are unsure, and remind users to consult a qualified scholar for personal rulings (fatwa). Do not invent verses or hadith.\n\nConversation so far:\n"+hist.slice(-8).join("\n")+"\nAssistant:";
+ const r=await s(p,{cache:false,onText:({text})=>{out.textContent=text}});out.textContent=r.text;hist.push("Assistant: "+r.text)}
+ catch(e){out.textContent="Sorry, I couldn’t answer just now ("+(e&&e.code||"error")+"). Please try again."}}
+$("send").onclick=ask;$("q").onkeydown=e=>{if(e.key=="Enter")ask()};
+</script></body></html>
